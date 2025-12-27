@@ -1,1 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Fire's Forum</title>
+  <link rel="icon" href="https://cdn.discordapp.com/attachments/1326638981319753798/1454484621688438967/Untitled995_20251227113851.png?ex=695141dc&is=694ff05c&hm=b22c193811838d00a07637caf05e4c4a4e10354dd694d336aa2a62b4095106de&">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.cdnfonts.com/css/coolvetica" rel="stylesheet"> 
+  <style>
+    body {
+      font-family: 'Coolvetica', sans-serif;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      text-align: center;
+      position: relative;
+      background-color: #1A1D23;
+    }
 
+    /* Fundo animado corrigido */
+    .bg-image, .fg-image {
+      position: absolute;
+      left: 50%;
+      width: 100vw;
+      height: 120vh; /* altura extra para evitar corte */
+      object-fit: cover;
+      transform: translateX(-50%) translateY(-10%);
+      z-index: -2;
+    }
+
+    .bg-image {
+      top: -5%;
+      animation: moveBG 25s ease-in-out infinite alternate;
+      z-index: -2;
+    }
+
+    .fg-image {
+      top: -7%;
+      animation: moveFG 22s ease-in-out infinite alternate-reverse;
+      z-index: -1;
+    }
+
+    @keyframes moveBG { 0% { transform: translateX(-50%) translateY(-5%); } 100% { transform: translateX(-50%) translateY(0%); } }
+    @keyframes moveFG { 0% { transform: translateX(-50%) translateY(-7%); } 100% { transform: translateX(-50%) translateY(-2%); } }
+
+    img.title-img { width: 700px; margin-bottom: 20px; }
+    h1 { font-size: 6em; margin-bottom: 0.5em; }
+    p { font-size: 2em; max-width: 600px; }
+    c { font-size: 1.5em; max-width: 600px; }
+
+    img.emoji { width: 1em; height: 1em; vertical-align: middle; }
+    img.wave-emoji { width: 1.7em; height: 1em; vertical-align: middle; }
+
+    .input-container {
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 500px;
+      position: relative;
+      z-index: 0;
+    }
+
+    input { padding: 10px; font-size: 1.5em; border: none; border-radius: 5px; }
+    button { padding: 10px; font-size: 1.5em; border: none; border-radius: 5px; background-color: #FF8B44; color: #2B223E; cursor: pointer; }
+    .error { color: #FF8B44; font-size: 1.2em; margin-top: 10px; }
+
+    /* Loading Dots */
+    .container {
+      --uib-size: 47px;
+      --uib-color: #FF8B44;
+      --uib-speed: 1s;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: calc(var(--uib-size) * 0.5);
+      width: var(--uib-size);
+      margin: 10px auto 0 auto;
+      visibility: hidden;
+    }
+
+    .dot {
+      flex-shrink: 0;
+      width: calc(var(--uib-size) * 0.17);
+      height: calc(var(--uib-size) * 0.17);
+      border-radius: 50%;
+      background-color: var(--uib-color);
+      transition: background-color 0.3s ease;
+    }
+
+    .dot:nth-child(1) { animation: jump var(--uib-speed) ease-in-out calc(var(--uib-speed) * -0.45) infinite; }
+    .dot:nth-child(2) { animation: jump var(--uib-speed) ease-in-out calc(var(--uib-speed) * -0.3) infinite; }
+    .dot:nth-child(3) { animation: jump var(--uib-speed) ease-in-out calc(var(--uib-speed) * -0.15) infinite; }
+    .dot:nth-child(4) { animation: jump var(--uib-speed) ease-in-out infinite; }
+
+    @keyframes jump { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-200%); } }
+
+    /* Créditos */
+    .credits {
+      position: absolute;
+      bottom: 10px;
+      font-size: 1em;
+      color: #ffffff;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .credits img { width: 25px; height: 25px; vertical-align: middle; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <!-- Fundo e frente -->
+  <img src="https://cdn.discordapp.com/attachments/1326638981319753798/1454475733039583317/1004_Sem_Titulo_20251227104553.png?ex=69513995&is=694fe815&hm=c43ea7fd484e42cf3da788900e6e3af021f889b82e1f907828567752f1c7fa7d&" class="bg-image">
+  <img src="https://cdn.discordapp.com/attachments/1326638981319753798/1454475771547484374/1004_Sem_Titulo_20251227104556.png?ex=6951399e&is=694fe81e&hm=fed21d231cbafed279fd4393045f1669bbbd98046cc011c6b91e604b1f08ca&" class="fg-image">
+
+  <img src="https://cdn.discordapp.com/attachments/1326638981319753798/1454484621688438967/Untitled995_20251227113851.png?ex=695141dc&is=694ff05c&hm=b22c193811838d00a07637caf05e4c4a4e10354dd694d336aa2a62b4095106de&" alt="Title Image" class="title-img">
+  <h1>Holdy! <img src="https://cdn.discordapp.com/attachments/1326638981319753798/1454473171947360360/image_search_1766843507156.gif?ex=69513732&is=694fe5b2&hm=225a9f4a5fe055b06c5249e03b392f18f86bee36b52f6a8b111a7602759a10b5&" alt="wave" class="wave-emoji"></h1>
+  <p>
+    welcome to Fire's Forum, a very cool place ig <img src="https://cdn.discordapp.com/attachments/1326638981319753798/1454473186946187386/image_search_1766843565777.gif?ex=69513736&is=694fe5b6&hm=a073ae8dfe0ba3282ed7790252e244fa601d5bad4f5f6e5f8b1e83a6478b26d3&" alt="anoy" class="emoji"><br>
+    here its like Twitter or smth, idk.<br>
+    to start u need to enter an account <img src="https://cdn.discordapp.com/emojis/1175642878207340565.gif?size=2048" alt="hungry" class="emoji">
+  </p>
+  <c>Enter an account username & password, if the account don't exists you will create one insted of login-in.</c>
+
+  <div class="input-container">
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="confirmAccount()">Enter</button>
+    <div class="error" id="error-msg"></div>
+  </div>
+
+  <!-- Loading -->
+  <div class="container" id="loading">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <!-- Créditos -->
+  <div class="credits">
+    by
+    <img src="https://cdn.discordapp.com/attachments/1326638981319753798/1454484919991402610/ish.png?ex=69514223&is=694ff0a3&hm=91620e9ad91c5bcb08cf552b2a810dd24da3dd24133e12b1045e3160ef3022f9&" alt="ishval"> Ishval
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = { databaseURL: "https://fire-tavern-default-rtdb.firebaseio.com/" };
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function confirmAccount() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorMsg = document.getElementById('error-msg');
+      const loading = document.getElementById('loading');
+
+      if (!username || !password) {
+        errorMsg.textContent = "fill the informations please...";
+        return;
+      }
+
+      loading.style.visibility = "visible";
+      errorMsg.textContent = "";
+
+      const userRef = database.ref('users/' + username);
+      userRef.get().then((snapshot) => {
+        if (snapshot.exists()) {
+          if (snapshot.val().password === password) {
+            errorMsg.style.color = "#00FF00";
+            errorMsg.textContent = "Log-in...";
+            setTimeout(() => { window.location.href = "home.html"; }, 1000);
+          } else {
+            errorMsg.style.color = "#FF8B44";
+            errorMsg.textContent = "Wrong password or maybe the account username already exists";
+          }
+        } else {
+          userRef.set({ password: password })
+          .then(() => {
+            errorMsg.style.color = "#00FF00";
+            errorMsg.textContent = "Account Created!";
+            setTimeout(() => { window.location.href = "home.html"; }, 1000);
+          })
+          .catch(() => {
+            errorMsg.style.color = "#FF8B44";
+            errorMsg.textContent = "Error!!";
+          });
+        }
+      }).catch(() => {
+        errorMsg.style.color = "#FF8B44";
+        errorMsg.textContent = "Error!";
+      }).finally(() => { loading.style.visibility = "hidden"; });
+    }
+  </script>
+</body>
+  </html>
