@@ -16,10 +16,7 @@
       --error: #FF8B44;
     }
 
-    html,body{
-      height:100%;
-      margin:0;
-    }
+    html,body{ height:100%; margin:0; }
 
     body {
       font-family: 'Coolvetica', sans-serif;
@@ -274,12 +271,54 @@
 
     // Redirection path (home inside DX folder on GitHub)
     const redirectPath = "DX/home.html";
+    const STORAGE_KEY = "fire_forum_user";
 
     enterBtn.addEventListener('click', confirmAccount);
-    // allow Enter key to submit
     document.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter') confirmAccount();
+      if(e.key === 'Enter') {
+        // prevent triggering twice if Enter on button focused
+        const active = document.activeElement;
+        if(active && active.tagName !== 'BUTTON') confirmAccount();
+      }
     });
+
+    // Ao carregar a página, tenta auto-login se existir user salvo
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        // tenta verificar se usuário realmente existe no DB antes de redirecionar
+        tryAutoLogin(saved);
+      }
+    });
+
+    function tryAutoLogin(savedUsername){
+      // mostra loading e mensagem curta
+      showLoading(true);
+      errorEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success') || '#00FF00';
+      errorEl.textContent = `Auto-login como ${decodeURIComponent(savedUsername)}...`;
+
+      const userRef = database.ref('users/' + encodeURIComponent(savedUsername));
+      userRef.get().then((snap) => {
+        if (snap.exists()) {
+          // encontrou — redireciona
+          setTimeout(() => { window.location.href = redirectPath; }, 700);
+        } else {
+          // não existe mais: limpa e mostra mensagem
+          localStorage.removeItem(STORAGE_KEY);
+          errorEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error') || '#FF8B44';
+          errorEl.textContent = "Saved account not found anymore.";
+          setTimeout(() => { errorEl.textContent = ""; }, 1600);
+        }
+      }).catch((err) => {
+        console.error(err);
+        // se der erro de rede, não remove, só mostra aviso
+        errorEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error') || '#FF8B44';
+        errorEl.textContent = "Connection issue while auto-login.";
+        setTimeout(() => { errorEl.textContent = ""; }, 1600);
+      }).finally(() => {
+        setTimeout(() => showLoading(false), 700);
+      });
+    }
 
     function confirmAccount(){
       const username = document.getElementById('username').value.trim();
@@ -296,27 +335,33 @@
       showLoading(true);
       let willRedirect = false;
 
-      const userRef = database.ref('users/' + encodeURIComponent(username));
+      const encodedUsername = encodeURIComponent(username);
+      const userRef = database.ref('users/' + encodedUsername);
       userRef.get().then((snapshot) => {
         if(snapshot.exists()){
           const val = snapshot.val();
-          // If stored as object with password property
           const storedPwd = (val && typeof val === 'object' && 'password' in val) ? val.password : (typeof val === 'string' ? val : null);
 
           if(storedPwd !== null && storedPwd === password){
+            // login ok -> salva sessão e redireciona
+            try {
+              localStorage.setItem(STORAGE_KEY, encodedUsername);
+            } catch(e){ console.warn("localStorage error", e); }
             errorEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success') || '#00FF00';
             errorEl.textContent = "Log-in... Redirecting";
             willRedirect = true;
-            // keep loading visible while redirecting
             setTimeout(() => { window.location.href = redirectPath; }, 900);
           } else {
             errorEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error') || '#FF8B44';
             errorEl.textContent = "Wrong password or maybe the account username already exists";
           }
         } else {
-          // create new user
+          // cria novo usuário, salva sessão e redireciona
           userRef.set({ password: password })
             .then(() => {
+              try {
+                localStorage.setItem(STORAGE_KEY, encodedUsername);
+              } catch(e){ console.warn("localStorage error", e); }
               errorEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--success') || '#00FF00';
               errorEl.textContent = "Account Created! Redirecting...";
               willRedirect = true;
@@ -333,7 +378,7 @@
         errorEl.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error') || '#FF8B44';
         errorEl.textContent = "Error connecting to Firebase!";
       }).finally(() => {
-        // hide loading only if we are NOT redirecting
+        // esconde loading só se não for redirecionar
         setTimeout(() => {
           if(!willRedirect) showLoading(false);
         }, 600);
